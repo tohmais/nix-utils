@@ -3,18 +3,10 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-24.11";
-    utils.url = "github:numtide/flake-utils";
   };
-  outputs = {
-    self,
-    nixpkgs,
-    utils,
-  }:
-    utils.lib.eachDefaultSystem (
-      system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in {
-        lib = import ./lib.nix {inherit pkgs;};
-      }
-    );
+  outputs = {nixpkgs}: let
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+  in {
+    lib = import ./lib.nix {inherit pkgs;};
+  };
 }
