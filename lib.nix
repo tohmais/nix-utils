@@ -1,4 +1,4 @@
-{pkgs}: {
+{pkgs}: let
   mkMustache = name: template: data:
     pkgs.stdenv.mkDerivation {
       name = "${name}";
@@ -21,4 +21,11 @@
         cp rendered_file $out
       '';
     };
-}
+
+  lib = {
+    inherit
+      mkMustache
+      ;
+  };
+in
+  lib
