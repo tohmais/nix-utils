@@ -21,11 +21,4 @@
         cp rendered_file $out
       '';
     };
-
-  lib = {
-    inherit
-      mkMustache
-      ;
-  };
-in
-  lib
+in {inherit mkMustache;}
