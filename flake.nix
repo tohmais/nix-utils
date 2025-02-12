@@ -3,7 +3,13 @@
 
   inputs.nixpkgs.url = "nixpkgs/nixos-24.11";
 
-  outputs = {nixpkgs, ...} @ inputs: {
-    lib = import ./lib.nix {inherit (inputs.nixpkgs) pkgs;};
+  outputs = {
+    self,
+    nixpkgs,
+  }: let
+    forAllSystems = nixpkgs.lib.genAttrs ["x86_64-linux" "x86_64-darwin" "i686-linux" "aarch64-linux"];
+    pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
+  in {
+    lib = import ./lib.nix {inherit pkgs;};
   };
 }
