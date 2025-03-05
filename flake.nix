@@ -17,18 +17,10 @@
         dataJSON = builtins.toJSON args.data;
       in
         pkgs.runCommand "rendered-template" {
+          passAsFile = ["dataJSON"];
           buildInputs = [mustache];
         } ''
-          echo "${dataJSON}" | ${mustache}/bin/mustache - ${args.template} > $out
-        '';
-
-      renderInline = args: let
-        dataJSON = builtins.toJSON args.data;
-      in
-        pkgs.runCommand "inline-template" {
-          buildInputs = [mustache];
-        } ''
-          echo "${dataJSON}" | ${mustache}/bin/mustache - <(echo "${args.template}") > $out
+          ${mustache}/bin/mustache $dataJSONPath ${args.template} > $out
         '';
     };
   };
