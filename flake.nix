@@ -1,15 +1,23 @@
 {
-  description = "Tiny nix utilities";
+  description = "A Nix library for rendering Mustache templates";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs";
   };
+
   outputs = {
     self,
     nixpkgs,
   }: let
-    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    pkgs = import nixpkgs {system = "x86_64-linux";};
+    mustache = pkgs.mustache-go; # Or use mustache-rs
   in {
-    lib = import ./lib.nix {inherit pkgs;};
+    lib.renderMustache = {
+      template,
+      data,
+    }:
+      pkgs.runCommand "rendered-template" {buildInputs = [mustache];} ''
+        echo '${builtins.toJSON data}' | ${mustache}/bin/mustache - ${template} > $out
+      '';
   };
 }
